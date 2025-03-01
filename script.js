@@ -33,7 +33,7 @@ buttonElem.addEventListener("click", () => {
   let newNote = {
     title: inputElem.value,
     description: textareaElem.value,
-    date: "April 12, 2025",
+    date: getNowDate(),
   };
 
   notes.push(newNote);
@@ -42,6 +42,23 @@ buttonElem.addEventListener("click", () => {
   generateNotes(notes);
   clearInputs();
 });
+
+function getNowDate(){
+  let now = new Date();
+
+  const months = ["January", "February", "March", "April", "May", "June", "July",
+      "August", "September", "October", "November", "December"];
+  const days = ['sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+
+  let toDay = now.getDay()
+  let nowMonth = now.getMonth()
+  let year = now.getFullYear()
+  let dayOfMonth = now.getDate()
+
+  return `${months[nowMonth]} ${dayOfMonth} , ${year} (${days[toDay]})`;
+
+
+}
 
 function clearInputs() {
   inputElem.value = "";
@@ -119,5 +136,4 @@ window.addEventListener("keyup", (event) => {
   }
 });
 
-// const months = ["January", "February", "March", "April", "May", "June", "July",
-//     "August", "September", "October", "November", "December"];
+
