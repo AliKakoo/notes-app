@@ -70,7 +70,7 @@ function generateNotes(notes) {
     note.remove();
   });
 
-  notes.forEach((note) => {
+  notes.forEach((note , index) => {
     wrapperElem.insertAdjacentHTML(
       "beforeend",
       `
@@ -87,7 +87,7 @@ function generateNotes(notes) {
               <li>
                 <i class="uil uil-pen"></i>Edit
               </li>
-              <li>
+              <li onclick="removeNote(${index})">
                 <i class="uil uil-trash"></i>Delete
               </li>
             </ul>
@@ -96,6 +96,23 @@ function generateNotes(notes) {
       </li> `
     );
   });
+}
+
+function removeNote (noteIndex) {
+
+  let deleted = confirm("Are You Sure To Delete?😢")
+
+  if (deleted) {
+    let newNotes = getLocalStorageNotes();
+
+    newNotes.splice(noteIndex, 1);
+
+    setNotesInLocalStorage(newNotes);
+
+    generateNotes(newNotes);
+  } 
+
+  
 }
 
 function showSetting(element) {
