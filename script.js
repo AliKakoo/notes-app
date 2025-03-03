@@ -10,54 +10,104 @@ const addBox = $.querySelector(".add-box"),
   wrapperElem = $.querySelector(".wrapper");
 
 let isUpdate = false;
+let updateID = null
 
 let notes = [];
 
-addBox.addEventListener("click", () => {
+addBox.addEventListener("click", showModal);
+
+function showModal  (noteTitle, noteDesc)  {
   if (isUpdate) {
     popupTitle.innerHTML = "Update Main Note";
     buttonElem.innerHTML = "Update Note";
-    isUpdate = true; //todo: update
+    inputElem.value = noteTitle;
+    textareaElem.value = noteDesc;
   } else {
     popupTitle.innerHTML = "Add a New Note";
     buttonElem.innerHTML = "Add Note";
-    isUpdate = false; // todo : update
+    
   }
 
   inputElem.focus();
 
   popupBox.classList.add("show");
-});
+};
 
 buttonElem.addEventListener("click", () => {
-  let newNote = {
-    title: inputElem.value,
-    description: textareaElem.value,
-    date: getNowDate(),
-  };
 
-  notes.push(newNote);
-  setNotesInLocalStorage(notes);
-  closeModal();
-  generateNotes(notes);
-  clearInputs();
+  if (isUpdate) {
+
+    let allNotes = getLocalStorageNotes();
+
+    allNotes.some((note , index) => {
+      if (index === updateID) {
+        note.title = inputElem.value;
+        note.description = textareaElem.value;
+
+      }
+    })
+
+    setNotesInLocalStorage(allNotes);
+    generateNotes(allNotes)
+    closeModal()
+    clearInputs()
+
+    isUpdate =false
+    
+  } else {
+    
+    let newNote = {
+      title: inputElem.value,
+      description: textareaElem.value,
+      date: getNowDate(),
+    };
+    
+    notes.push(newNote);
+    setNotesInLocalStorage(notes);
+    closeModal();
+    generateNotes(notes);
+    clearInputs();
+  }
+
+
+
 });
 
-function getNowDate(){
+// Date
+
+function getNowDate() {
   let now = new Date();
 
-  const months = ["January", "February", "March", "April", "May", "June", "July",
-      "August", "September", "October", "November", "December"];
-  const days = ['sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const days = [
+    "sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
-  let toDay = now.getDay()
-  let nowMonth = now.getMonth()
-  let year = now.getFullYear()
-  let dayOfMonth = now.getDate()
+  let toDay = now.getDay();
+  let nowMonth = now.getMonth();
+  let year = now.getFullYear();
+  let dayOfMonth = now.getDate();
 
   return `${months[nowMonth]} ${dayOfMonth} , ${year} (${days[toDay]})`;
-
-
 }
 
 function clearInputs() {
@@ -70,7 +120,7 @@ function generateNotes(notes) {
     note.remove();
   });
 
-  notes.forEach((note , index) => {
+  notes.forEach((note, index) => {
     wrapperElem.insertAdjacentHTML(
       "beforeend",
       `
@@ -84,7 +134,7 @@ function generateNotes(notes) {
           <div class="settings">
             <i class="uil uil-ellipsis-h" onclick="showSetting(this)"></i>
             <ul class="menu">
-              <li>
+              <li onclick="editNote(${index},'${note.title}','${note.description}')">
                 <i class="uil uil-pen"></i>Edit
               </li>
               <li onclick="removeNote(${index})">
@@ -98,9 +148,8 @@ function generateNotes(notes) {
   });
 }
 
-function removeNote (noteIndex) {
-
-  let deleted = confirm("Are You Sure To Delete?😢")
+function removeNote(noteIndex) {
+  let deleted = confirm("Are You Sure To Delete That?😢");
 
   if (deleted) {
     let newNotes = getLocalStorageNotes();
@@ -110,10 +159,21 @@ function removeNote (noteIndex) {
     setNotesInLocalStorage(newNotes);
 
     generateNotes(newNotes);
-  } 
-
-  
+  }
 }
+
+
+
+function editNote(noteID, noteTitle, noteDesc) {
+
+  isUpdate = true;
+ showModal( noteTitle, noteDesc);
+
+ updateID = noteID
+
+}
+
+
 
 function showSetting(element) {
   element.parentElement.classList.add("show");
@@ -152,5 +212,3 @@ window.addEventListener("keyup", (event) => {
     closeModal();
   }
 });
-
-
