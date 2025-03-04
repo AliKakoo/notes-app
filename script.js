@@ -177,6 +177,17 @@ function editNote(noteID, noteTitle, noteDesc) {
 
 function showSetting(element) {
   element.parentElement.classList.add("show");
+
+  document.addEventListener('click', event =>{
+    
+    // console.log(event.target.tagName)
+
+    if (event.target.tagName !== 'I' || event.target != el) {
+  element.parentElement.classList.remove("show");
+      
+    } 
+
+  })
 }
 
 function getLocalStorageNotes() {
