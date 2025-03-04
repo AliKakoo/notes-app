@@ -1,1 +1,1 @@
-🔗 [Notes App's Sign up page]([link](https://alikakoo.github.io/notes-app/))
+🔗 [Notes App's Sign up page](https://alikakoo.github.io/notes-app/)
